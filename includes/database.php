@@ -18,20 +18,20 @@ class MySQLBD
 	
 	public function abrir_conexion()
 	{
-		$this->conexion = mysql_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD); 
+		$this->conexion = mysqli_connect(DB_SERVER,DB_USERNAME,DB_PASSWORD); 
 		
 		if(!$this->conexion)
 		{
-			die("No hemos podido conectarnos a la base de datos: ". mysql_error());	
+			die("No hemos podido conectarnos a la base de datos: ". mysqli_error());	
 	
 		}
 		else
 		{
-			$db_seleccionada = mysql_select_db(DB_NAME,$this->conexion);
+			$db_seleccionada = mysqli_select_db($this->conexion, DB_NAME);
 			
 			if(!$db_seleccionada)
 			{
-				die("No hemos podido seleccionar la base de datos: ". mysql_error());
+				die("No hemos podido seleccionar la base de datos: ". mysqli_error());
 			}
 		}
 	}
@@ -39,29 +39,29 @@ class MySQLBD
 	public function enviar_consulta($sql)
 	{
 		$this->ultima_consulta = $sql;
-		$resultado = mysql_query($sql,$this->conexion);
+		$resultado = mysqli_query($this->conexion, $sql);
 		$this->verificar_consulta($resultado);
 		return $resultado;
 	}
 	
 	public function fetch_array($resultado)
 	{
-		return mysql_fetch_array($resultado);
+		return mysqli_fetch_array($resultado);
 	}
 	
 	public function affected_rows()
 	{
-		return mysql_affected_rows($this->conexion);
+		return mysqli_affected_rows($this->conexion);
 	}
 	
 	public function insert_id()
 	{
-		return mysql_insert_id($this->conexion);
+		return mysqli_insert_id($this->conexion);
 	}
 	
 	public function num_rows($resultado)
 	{
-		return mysql_num_rows($resultado);
+		return mysqli_num_rows($resultado);
 	}
 	
 	public function preparar_consulta($consulta)
@@ -72,7 +72,7 @@ class MySQLBD
 			  {
 				  $consulta = stripslashes($consulta);
 			  }
-			  $consulta = mysql_real_escape_string($consulta);
+			  $consulta = mysqli_real_escape_string($consulta);
 		}
 		else
 		{
@@ -88,7 +88,7 @@ class MySQLBD
 	{
 		if(!$consulta)
 		{
-			$salida = "No se ha podido realizar la consulta: " . mysql_error() . "<br />";
+			$salida = "No se ha podido realizar la consulta: " . mysqli_error() . "<br />";
 			$salida .="Ultima Consulta SQL: " . $this->ultima_consulta;
 			die($salida );
 		}
@@ -98,7 +98,7 @@ class MySQLBD
 	{
 		if(isset($this->conexion))
 		{
-			mysql_close($this->conexion);
+			mysqli_close($this->conexion);
 			unset($this->conexion);
 		}
 	}
